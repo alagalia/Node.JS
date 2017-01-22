@@ -1,16 +1,20 @@
 let http = require('http')
-
+let fs = require('fs')
 http
 .createServer((request, response) => {
-  if (request.method === 'POST') {
-    response.writeHead(200, {
-      'content-type': 'text/html'
+  if (request.method === 'GET') {
+    fs.readFile('./index.html', (err, data) => {
+      if (err) { console.log(err) } else {
+        response.writeHead(200, {
+          'content-type': 'text/html'
+        })
+        response.write(data)
+        response.end()
+      }
     })
-    response.write('<h1>Hi from POST method!</h1>')
-    response.end()
-  } else if (request.method === 'GET') {
+  } else if (request.method === 'POST') {
     response.writeHead(500)
-    response.write('GET method not supported')
+    response.write('POST method not supported')
     response.end()
   }
 })
