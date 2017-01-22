@@ -1,0 +1,14 @@
+{
+  "name": "initnode",
+  "version": "1.0.0",
+  "description": "this is init node through console",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ALA",
+  "license": "ISC",
+  "dependencies": {
+    "standard": "8.1.0"
+  }
+}
