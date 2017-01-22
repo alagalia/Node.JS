@@ -1,14 +1,13 @@
 let http = require('http')
 let fs = require('fs')
+let url = require('url')
 let port = 1337
 
 http
 .createServer((request, response) => {
-  console.log(request.url)
-  // console.log(request.headers)
-
+  let parsedUrl = url.parse(request.url).pathname
   if (request.method === 'GET') {
-    if (request.url === '/favicon.ico') {
+    if (parsedUrl === '/favicon.ico') {
       fs.readFile('./favicon.ico', (err, data) => {
         if (err) { console.log(err) } else {
           response.writeHead(200)
@@ -16,7 +15,7 @@ http
           response.end()
         }
       })
-    } else if (request.url === '/') {
+    } else if (parsedUrl === '/') {
       fs.readFile('./index.html', (err, data) => {
         if (err) { console.log(err) } else {
           response.writeHead(200, {
@@ -27,8 +26,26 @@ http
         }
       })
     } else {
-      response.writeHead(404)
-      response.write('404 URL not found')
+      fs.readFile('.' + parsedUrl, (err, data) => {
+        if (err) {
+          response.writeHead(404)
+          response.write('404 URL not found')
+          response.end()
+          return
+        }
+
+        let contentType = 'text/plain'
+        if(parsedUrl.endsWith('.css')){
+          contentType = 'text/css'
+        } else if (parsedUrl.endsWith('.js')){
+          contentType = 'application/javascript'
+        }
+        response.writeHead(200, {
+          'Content-type': contentType
+        })
+        response.write(data)
+        response.end()
+      })
     }
   } else if (request.method === 'POST') {
     response.writeHead(500)
